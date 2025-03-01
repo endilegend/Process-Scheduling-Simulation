@@ -1,4 +1,4 @@
-# OS-Process-Switching
+#Process Scheduling Simulation
 Overview
 
 This program emulates the process scheduling mechanism in an operating system using structs in C. It takes a list of processes as input, simulating their execution based on priority scheduling. The program outputs an interleaved trace of the processes and the dispatcher.
