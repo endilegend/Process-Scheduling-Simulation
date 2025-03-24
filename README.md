@@ -1,69 +1,127 @@
-#Process Scheduling Simulation
-Overview
+# 🖥️ Process Scheduling Simulation in C
 
-This program emulates the process scheduling mechanism in an operating system using structs in C. It takes a list of processes as input, simulating their execution based on priority scheduling. The program outputs an interleaved trace of the processes and the dispatcher.
+This project simulates **priority-based process scheduling** in an operating system using C. It utilizes `structs` to represent processes and simulates the execution timeline with a dispatcher and dynamic priority updates.
 
-Features
+---
 
-Priority Scheduling: The process with the highest priority (lowest priority value) is selected first. If multiple processes have the same priority, the first one is chosen.
+## 📌 Features
 
-Struct-Based Design: The program utilizes a Process struct to store and manage process details.
+- **Priority Scheduling:**  
+  Processes with the highest priority (lowest priority number) are selected first. Ties are broken by input order.
 
-Dispatcher Simulation: A dedicated dispatcher process runs periodically and cannot be preempted.
+- **Struct-Based Design:**  
+  Each process is stored as a `struct` with details such as PID, name, priority, and runtime.
 
-Dynamic Priority Adjustment: After a process completes its execution cycle, the priority of all remaining processes increases by 1.
+- **Dispatcher Simulation:**  
+  A special non-preemptive dispatcher process runs for 4 clock cycles between each process execution.
 
-Specifications
+- **Dynamic Priority Adjustment:**  
+  After every process execution (or completion), the priority of all remaining processes increases by 1.
 
-Process Struct: Each process is represented by the following attributes:
+---
 
-pid (Process ID): A unique random number between 1000 - 4000.
+## 🔧 Specifications
 
-processName: A string (char array) with a maximum length of 30.
+### 🧱 Process Struct
 
-priority: An integer (0 - Highest priority, 10 - Lowest priority).
+Each process is represented using the following structure:
 
-runTime: The total execution time required for completion.
+```c
+typedef struct {
+    int pid;               // Unique Process ID (1000–4000)
+    char processName[30];  // Process Name
+    int priority;          // 0 (highest) to 10 (lowest)
+    int runTime;           // Total time required
+    int elapsedTime;       // Time already executed
+} Process;
+```
 
-elapsedTime (or remainingTime): Tracks the progress of the process.
+### ⚙️ Dispatcher Process
 
-Dispatcher:
+- **Fixed PID:** `6787`  
+- **Priority:** Always `0`  
+- **Behavior:** Runs for `4` clock cycles and **cannot be preempted**
 
-Runs for 4 clock cycles.
+---
 
-Has a fixed pid of 6787 and a priority of 0.
+## 🕹️ Process Execution Logic
 
-Cannot be preempted.
+- Each process runs for **5 clock cycles** per turn.
+- After each time slice (or if the process finishes), the dispatcher runs for 4 cycles.
+- On each context switch or process completion:
+  - All remaining processes have their **priority increased by 1** (up to max value of 10).
+- The scheduler picks the **next process with the highest priority** (lowest value).
 
-Process Execution:
+---
 
-Each process runs for 5 clock cycles before switching.
+## 🧑‍💻 Input Format
 
-Upon completion or context switch, all remaining processes have their priority increased by 1.
+The program accepts user input in the format:
 
-Input Format
-
-The program accepts process details from the command line, entered one at a time in the format:
-
+```
 PROCESSNAME PRIORITY RUNTIME
+```
 
-The process list continues until the user enters 'Q' to quit.
+- Example:
+  ```
+  Enter the process details: CHROME 2 10
+  Enter the process details: XORG 0 20
+  Enter the process details: QMGRT 10 8
+  Enter the process details: GVFASD 3 1
+  Enter the process details: SSH 9 3
+  Enter the process details: Q
+  ```
 
-Example Input
+- Input continues until the user enters `Q` to quit.
 
-Enter the process details: CHROME 2 10
-Enter the process details: XORG 0 20
-Enter the process details: QMGRT 10 8
-Enter the process details: GVFASD 3 1
-Enter the process details: SSH 9 3
-Enter the process details: Q
+---
 
-Implementation Details
+## 📂 Implementation Details
 
-Each process input is stored as a struct object.
+- Processes are stored using an array of `Process` structs (or another suitable data structure).
+- The simulation includes:
+  - Function for adding and validating processes.
+  - A dispatcher function to simulate its 4-clock-cycle behavior.
+  - Scheduler and execution loop for selecting, running, and updating processes.
+- Code includes clear **comments** and **header files** for readability and modularity.
 
-All processes are managed in an array of structs or another suitable data structure.
+---
 
-The dispatcher and process execution logic are structured into separate functions.
+## 🚀 Compilation & Running
 
-Header files and comments are included for clarity.
+To compile the program:
+
+```bash
+gcc -o scheduler scheduler.c
+```
+
+To run the program:
+
+```bash
+./scheduler
+```
+
+---
+
+## ✅ Example Output (Simplified)
+
+```
+Running process: XORG [PID: 1034, Priority: 0]
+... (5 clock cycles)
+Dispatcher running [PID: 6787]
+... (4 clock cycles)
+Running process: CHROME [PID: 2456, Priority: 3]
+...
+```
+
+---
+
+## 📄 License
+
+This project is open-source and free to use under the MIT License.
+
+---
+
+## ✍️ Author
+
+Developed with ❤️ in C by Endi Troqe
